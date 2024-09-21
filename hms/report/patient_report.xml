@@ -1,0 +1,63 @@
+<odoo>
+  <record id="action_report_patient_status" model="ir.actions.report">
+    <field name="name">Patient Status Report</field>
+    <field name="model">hms.patient</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_file">hms.report_patient_status</field>
+    <field name="report_name">hms.report_patient_status</field>
+</record>
+
+    <template id="patient_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="doc_ids" t-as="patient_id">
+                <t t-set="patient" t-value="doc_model.browse(patient_id)"/>
+                <div class="page" style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h1 style="text-align: center; color: #2C3E50;">Patient Status Report</h1>
+                    <hr style="border: 1px solid #2C3E50;"/>
+
+                    <div style="margin-bottom: 20px;">
+                        <h2 style="color: #2980B9;">Patient Information</h2>
+                        <p><strong>Name:</strong> <t t-esc="patient.first_name"/> <t t-esc="patient.last_name"/></p>
+                        <p><strong>Email:</strong> <t t-esc="patient.email"/> </p>
+                        <p><strong>Birth Date:</strong> <t t-esc="patient.birth_date"/></p>
+                        <p><strong>Age:</strong> <t t-esc="patient.age"/></p>
+                        <p><strong>Blood Type:</strong> <t t-esc="patient.blood_type"/></p>
+                        <p><strong>PCR Ratio:</strong> <t t-esc="patient.cr_ratio"/></p>
+                        <p><strong>Department:</strong> <t t-esc="patient.department_id.name"/></p>
+                        <p><strong>Doctors:</strong>
+                            <t t-foreach="patient.doctor_ids" t-as="doctor">
+                                <t t-esc="doctor.name"/> <t t-if="not loop.last">, </t>
+                            </t>
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <h2 style="color: #2980B9;">User Log History</h2>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background-color: #ecf0f1;">
+                                    <th style="border: 1px solid #bdc3c7; padding: 8px; text-align: left;">Date</th>
+                                    <th style="border: 1px solid #bdc3c7; padding: 8px; text-align: left;">OSD</th>
+                                    <th style="border: 1px solid #bdc3c7; padding: 8px; text-align: left;">Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="patient.log_history_ids" t-as="log">
+                                    <tr>
+                                        <td style="border: 1px solid #bdc3c7; padding: 8px;"><t t-esc="log.date"/></td>
+                                        <td style="border: 1px solid #bdc3c7; padding: 8px;"><t t-esc="log.osd"/></td>
+                                        <td style="border: 1px solid #bdc3c7; padding: 8px;"><t t-esc="log.info"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 40px;">
+                        <p style="font-size: 0.9em; color: #7F8C8D;">Generated on: <t t-esc="fields.Date.today()"/></p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
